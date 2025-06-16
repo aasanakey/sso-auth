@@ -8,7 +8,7 @@ import { ref } from 'vue';
 
 const open = ref(false)
 defineEmits(['delete']);
-const { label, title, description } = defineProps<{ label: string, title: string, description: string, open: boolean }>()
+const { label, title, description } = defineProps<{ label?: string, title?: string, description: string }>()
 const toggle = () => {
     open.value = !open.value;
 }
