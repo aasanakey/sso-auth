@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Http\Resources\ClientResource;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\Request;
@@ -15,7 +16,6 @@ use Laravel\Passport\ClientRepository;
 
 class DashboardController extends Controller implements HasMiddleware
 {
-    protected $clientRepository;
     /**
      * Get the middleware that should be assigned to the controller.
      *
@@ -27,12 +27,6 @@ class DashboardController extends Controller implements HasMiddleware
             'auth',
         ];
     }
-
-    /*public function __construct(ClientRepository $clientRepository)
-    {
-        //$this->middleware(['auth']);
-        $this->clientRepository = $clientRepository;
-    }*/
 
     /**
      * Display a listing of the resource.
@@ -85,7 +79,7 @@ class DashboardController extends Controller implements HasMiddleware
         ]);
     }
 
-    public function update_user(ProfileUpdateRequest $request,User $user)
+    public function update_user(ProfileUpdateRequest $request, User $user)
     {
         $user->fill($request->validated());
 
@@ -95,7 +89,16 @@ class DashboardController extends Controller implements HasMiddleware
 
         $user->save();
 
-        return redirect()->back()->with('status','User updated.');
+        return redirect()->back()->with('status', 'User updated.');
+    }
+
+    public function delete_user(Request $request, User $user)
+    {
+        $request->validate([
+            'password' => ['required', 'current_password'],
+        ]);
+        $user->delete();
+        return redirect()->route('users')->with('success', 'User deleted successfully.');
     }
 
     /**
@@ -111,8 +114,10 @@ class DashboardController extends Controller implements HasMiddleware
 
     public function show_client(Client $client)
     {
+        ClientResource::withoutWrapping();
         return Inertia::render('Client', [
-            'client' => $client
+            'client' => new ClientResource($client),
+            'secret' => $client->plainSecret,
         ]);
     }
 
@@ -123,33 +128,51 @@ class DashboardController extends Controller implements HasMiddleware
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'redirect_url' => 'required|url',
+            'redirect_uris' => 'required|array',
+            'redirect_uris.*' => 'required|string',
             'confidential' => 'required|boolean',
-            'type' => 'required'
+            //'type' => 'required' oW2m4Y8iZbGLeLIGJSMw3EspD1UfJwv2H9Yu2K0P BACaYISwFYagWs6Oi99bhTjjkUHfJ6TKdBc9t73q
         ]);
 
-        /*$client = $this->clientRepository->create(
-            user:auth()->id(), // Or null if clients are not user-specific
-            name:$request->name,
-            redirectUris: [$request->redirect],
-            provider:null, // provider
-            personalAccessClient:false, // personalAccessClient
-            passwordClient:false, // passwordClient
-            confidential:$request->boolean('confidential') //false  // confidential (set to true if secret is used)
-        );*/
+
         $client = app(ClientRepository::class)->createAuthorizationCodeGrantClient(
-            user: auth()->user(),
             name: $request->name,
-            redirectUris: [$request->redirect_url],
-            confidential: $request->boolean('confidential'),
+            redirectUris: $request->redirect_uris, //explode(',', $request->redirect_uris),
+            confidential: (bool) $request->input('confidential', true),
+            user: null, //$request->user(),
             enableDeviceFlow: true
         );
-        $results = [
-            'message' => 'Client created successfully!',
-            'client_id' => $client->id, // Passport's client ID is the UUID
-            'client_secret' => $client->plainSecret, // Only show this once!
-        ];
-        return redirect()->back()->with('success', $results);
+
+        $plainSecret = $client->plainSecret;
+        if ($plainSecret) {
+            ClientResource::withoutWrapping();
+            return Inertia::render('Client', [
+                'client' => new ClientResource($client),
+                'secret' => $plainSecret,
+            ]);
+        }
+        return redirect()->back()->with('success', "Client created succussfully.");
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update_client(Request $request, Client $client)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'redirect_uris' => 'required|array',
+            'redirect_uris.*' => 'required|string'
+            //'confidential' => 'required|boolean',
+            //'type' => 'required'
+        ]);
+
+        /* [
+            'name' => $request->name,
+            'redirect_uris' => $request->redirect_uris
+        ]*/
+        $client->update($validated);
+        return redirect()->back()->with('success', 'Client updated');
     }
 
     /**
