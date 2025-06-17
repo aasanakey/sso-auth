@@ -32,10 +32,10 @@ const defaultColumns: ColumnDef<User>[] = [
         header: 'Name',
         accessorKey: 'name',
     },
-    {
-        header: 'Owner Type',
-        accessorKey: 'owner_type',
-    },
+    // {
+    //     header: 'Owner Type',
+    //     accessorKey: 'owner_type',
+    // },
     {
         header: 'Created at',
         accessorKey: 'created_at',
@@ -49,13 +49,13 @@ const defaultColumns: ColumnDef<User>[] = [
             const client = row.original
             return h('div', { class: 'flex items-center gap-2' }, [
                 h(Link, {
-                    href: `/clients/${client.id}`,
-                    class: "inline-flex items-center w-full text-blue-500"
-                }, "view"), 
+                    href: route('show_client',{'client':client.id}),
+                    class: "inline-flex items-center text-blue-500"
+                }, () => "view"), 
                 h(ClientModal, {client:client}),
                 //@ts-ignore
                 h(DeleteAction, {
-                    //label: 'Delete',
+                    label: 'Delete',
                     title: 'Delete Client',
                     description: 'This action will delete your client permanently. This cannot be undone.',
                     onDelete: () => deleteClient(client.id)

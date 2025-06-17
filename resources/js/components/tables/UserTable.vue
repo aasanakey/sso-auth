@@ -41,7 +41,7 @@ const defaultColumns: ColumnDef<User>[] = [
             const user = row.original
 
             return h('div',{cass:'flex items-center gap-2'},[
-                h(Link,{href:route('show_user',{user:user.id}), class:'text-blue-500'},'view')
+                h(Link,{href:route('show_user',{user:user.id}), class:'text-blue-500'},() =>'view')
             ])
         },
     }
