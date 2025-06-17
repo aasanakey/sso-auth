@@ -86,7 +86,7 @@ const submit = () => {
                 </form>
             </div>
 
-            <!-- <DeleteUser /> -->
+            <DeleteUser :user="props.user"/>
         </div>
     </AppLayout>
 </template>
