@@ -131,7 +131,7 @@ const toggleSecret = (val:boolean) => {
                             </label>
                         </div>
 
-                        <div class="flex items-center justify-between space-x-2">
+                        <!-- <div class="flex items-center justify-between space-x-2">
                             <label for="id"
                                 class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 flex flex-col space-y-1">
                                 <span>Grant Types</span>
@@ -140,7 +140,7 @@ const toggleSecret = (val:boolean) => {
                                     {{ grant_type }}
                                 </span>
                             </label>
-                        </div>
+                        </div> -->
 
                         <div v-if="client.confidential" class="flex items-center justify-between space-x-2">
                             <label for="id"
