@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use App\Http\Resources\ClientResource;
+use App\Models\Passport\Client;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\Request;
@@ -11,7 +12,6 @@ use Illuminate\Routing\Controllers\HasMiddleware;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
-use Laravel\Passport\Client;
 use Laravel\Passport\ClientRepository;
 
 class DashboardController extends Controller implements HasMiddleware
@@ -135,12 +135,21 @@ class DashboardController extends Controller implements HasMiddleware
         ]);
 
 
-        $client = app(ClientRepository::class)->createAuthorizationCodeGrantClient(
+        /*$client = app(ClientRepository::class)->createAuthorizationCodeGrantClient(
             name: $request->name,
             redirectUris: $request->redirect_uris, //explode(',', $request->redirect_uris),
             confidential: (bool) $request->input('confidential', true),
             user: null, //$request->user(),
             enableDeviceFlow: true
+        );*/
+
+        $client = app(ClientRepository::class)->create(
+            userId:null,
+            name:$request->name,
+            redirect: implode(',',$request->redirect_uris),
+            confidential: $request->boolean('confidential'),
+            personalAccess:true,
+            password:true,
         );
 
         $plainSecret = $client->plainSecret;
@@ -167,11 +176,11 @@ class DashboardController extends Controller implements HasMiddleware
             //'type' => 'required'
         ]);
 
-        /* [
-            'name' => $request->name,
-            'redirect_uris' => $request->redirect_uris
-        ]*/
-        $client->update($validated);
+        $attributes = [
+            ...$validated,
+            'redirect' => $validated['redirect_uris'],
+        ];
+        $client->update($attributes);
         return redirect()->back()->with('success', 'Client updated');
     }
 
@@ -182,5 +191,15 @@ class DashboardController extends Controller implements HasMiddleware
     {
         $client->delete();
         return redirect()->back()->with('success', 'Client deleted successfully.');
+    }
+
+    public function authorized_clients()
+    {
+        return Inertia::render('auth/oauth/AuthorizedClients');
+    }
+
+    public function personal_access_tokens()
+    {
+        return Inertia::render('auth/oauth/PersonalAccessTokens');
     }
 }

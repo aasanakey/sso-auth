@@ -25,3 +25,6 @@ Route::post('/clients',[DashboardController::class,'create_client'])->name('clie
 Route::get('/clients/{client}',[DashboardController::class,'show_client'])->name('show_client');
 Route::patch('/clients/{client}',[DashboardController::class,'update_client'])->name('update_client');
 Route::delete('/clients/{client}',[DashboardController::class,'destroy_client'])->name('clients.destroy');
+
+Route::get('/authorized-clients',[DashboardController::class,'authorized_clients'])->name('authorized_clients');
+Route::get('personal-access-tokens',[DashboardController::class,'personal_access_tokens'])->name('personal_access_tokens');
