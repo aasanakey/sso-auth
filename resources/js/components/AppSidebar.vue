@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, UserRound, UsersRound, Shield, LayoutPanelLeft} from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, UserRound, UsersRound, UserCog, Shield, LayoutPanelLeft, FolderClock} from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -16,7 +16,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Users',
-        href: '/users',
+        href: route('users'),
         icon: UserRound
     },
     {
@@ -31,8 +31,18 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Clients',
-        href: '/clients',
+        href: route('clients'),
         icon: LayoutPanelLeft,
+    },
+    {
+        title: 'Authorized Clients',
+        href: route('authorized_clients'),
+        icon: FolderClock
+    },
+    {
+        title: 'Access Tokens',
+        href: route('personal_access_tokens'),
+        icon: UserCog
     }
 ];
 
@@ -47,6 +57,10 @@ const footerNavItems: NavItem[] = [
         href: 'https://laravel.com/docs/starter-kits#vue',
         icon: BookOpen,
     },
+    {
+        title: 'Openid Discovery',
+        href: route('openid.discovery')
+    }
 ];
 </script>
 
