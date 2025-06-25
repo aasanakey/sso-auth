@@ -43,3 +43,12 @@ export interface User {
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;
+
+export interface SocialProvider {
+    id:number,
+    driver:string,
+    client_id:string,
+    client_secret:string
+    redirect_uri?: string
+    created_at:string
+}
