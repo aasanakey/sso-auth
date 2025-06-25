@@ -5,7 +5,7 @@ import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { BookOpen, Folder, LayoutGrid, UserRound, UsersRound, UserCog, Shield, LayoutPanelLeft, FolderClock} from 'lucide-vue-next';
+import { BookOpen, Folder, LayoutGrid, UserRound, UsersRound, UserCog, Shield, LayoutPanelLeft, FolderClock, Cog, Database } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const mainNavItems: NavItem[] = [
@@ -43,7 +43,12 @@ const mainNavItems: NavItem[] = [
         title: 'Access Tokens',
         href: route('personal_access_tokens'),
         icon: UserCog
-    }
+    },
+    {
+        title: 'Social Providers',
+        href: route('social_providers'),
+        icon: Database,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
@@ -59,7 +64,8 @@ const footerNavItems: NavItem[] = [
     },
     {
         title: 'Openid Discovery',
-        href: route('openid.discovery')
+        href: route('openid.discovery'),
+        icon: Cog
     }
 ];
 </script>
@@ -71,7 +77,7 @@ const footerNavItems: NavItem[] = [
                 <SidebarMenuItem>
                     <SidebarMenuButton size="lg" as-child>
                         <Link :href="route('dashboard')">
-                            <AppLogo />
+                        <AppLogo />
                         </Link>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
