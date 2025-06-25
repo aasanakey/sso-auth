@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use App\Models\SocialProvider;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -18,9 +19,20 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): Response
     {
+
+        $linked_providers = SocialProvider::whereHas('social_accounts', function ($query) {
+            $query->where('user_id', auth()->user()?->id);
+        })->get();
+
+        $unlinked_providers = SocialProvider::whereDoesntHave('social_accounts',function($query){
+            $query->where('user_id',auth()->user()?->id);
+        })->get();
+        
         return Inertia::render('settings/Profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            'linkedProviders' => $linked_providers,
+            'unlinkedProviders' => $unlinked_providers
         ]);
     }
 
