@@ -46,4 +46,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function social_accounts()
+    {
+        return $this->hasMany(SocialAccount::class,'user_id','id');
+    }
 }
