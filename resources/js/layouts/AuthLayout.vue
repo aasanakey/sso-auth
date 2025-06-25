@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import FlashMessage from '@/components/alert/FlashMessage.vue';
 import AuthLayout from '@/layouts/auth/AuthSimpleLayout.vue';
 
 defineProps<{
@@ -9,6 +10,7 @@ defineProps<{
 
 <template>
     <AuthLayout :title="title" :description="description">
+        <FlashMessage/>
         <slot />
     </AuthLayout>
 </template>
