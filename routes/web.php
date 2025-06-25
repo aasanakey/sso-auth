@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SocialProviderController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -28,3 +29,12 @@ Route::delete('/clients/{client}',[DashboardController::class,'destroy_client'])
 
 Route::get('/authorized-clients',[DashboardController::class,'authorized_clients'])->name('authorized_clients');
 Route::get('personal-access-tokens',[DashboardController::class,'personal_access_tokens'])->name('personal_access_tokens');
+
+Route::get('/social-providers',[SocialProviderController::class,'index'])->name('social_providers');
+Route::post('/social-providers',[SocialProviderController::class,'store'])->name('social_providers.store');
+Route::patch('/social-providers/{provider}',[SocialProviderController::class,'update'])->name('social_providers.update');
+Route::delete('/social-providers/{provider}',[SocialProviderController::class,'destroy'])->name('social_providers.destroy');
+
+Route::get('/auth/{provider:driver}/redirect',[SocialProviderController::class,'redirect'])->name('social.auth.redirect');
+Route::get('/auth/{provider:driver}/callback',[SocialProviderController::class,'callback'])->name('social.auth.callback');
+Route::get('/auth/{provider:driver}/unlink',[SocialProviderController::class,'unlinkProvider'])->name('social.auth.unlink');
