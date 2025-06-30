@@ -24,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Passport::hashClientSecrets();
         Passport::useClientModel(Client::class);
+        Passport::enablePasswordGrant();
         Passport::authorizationView(
             fn($parameters) => Inertia::render('auth/oauth/Authorize', [
                 'request' => $parameters['request'],
