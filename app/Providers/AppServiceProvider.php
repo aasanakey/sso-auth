@@ -34,16 +34,8 @@ class AppServiceProvider extends ServiceProvider
                 'scopes' => $parameters['scopes'],
             ])
         );
-        /*
-        Client::creating(function (Client $client) {
-            $client->incrementing = false;
-            $client->id = \Ramsey\Uuid\Uuid::uuid4()->toString();
-        });
-
-        Client::retrieved(function (Client $client) {
-            $client->incrementing = false;
-        });*/
-
+        Passport::tokensExpireIn(now()->addMinutes(config('services.oauth.token_expiration')));
+        Passport::refreshTokensExpireIn(now()->addMinutes(config('services.oauth.refresh_token_expiration')));
         Passport::tokensCan(config('openid.passport.tokens_can'));
     }
 }
