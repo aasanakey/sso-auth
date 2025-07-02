@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\API\ApiController;
-use App\Http\Middleware\EnsureClientIsAuthenticated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,4 +20,5 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/auth/logout', [ApiController::class, 'logout']);
 
     Route::get('/profile', [ApiController::class, 'profile']);
+    Route::post('/profile/{user}', [ApiController::class, 'update_profile']);
 });

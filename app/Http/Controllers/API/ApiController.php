@@ -121,6 +121,28 @@ class ApiController extends Controller
         return new UserResource($user);
     }
 
+    /**
+     * Get the authenticated user's profile.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update_profile(Request $request, User $user)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            //'password' => 'required|string|min:8|confirmed',
+        ]); 
+
+        $user->update($request->all());
+        UserResource::withoutWrapping();
+        return response()->json([
+            "message" => "Profile updated successfully.",
+            "data" => new UserResource($user)
+        ],200);
+    }
+
     public function forgot_password(Request $request)
     {
         $request->validate([
