@@ -64,4 +64,9 @@ return [
         'client_secret' => env('GITHUB_CLIENT_SECRET'),
         'redirect' => 'http://example.com/callback-url',
     ],
+
+    'oauth' => [
+        'token_expiration' => (int) env('TOKEN_EXPIRATION',10080),
+        'refresh_token_expiration' => (int) env('REFRESH_TOKEN_EXPIRATION',43200),
+    ]
 ];
