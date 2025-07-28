@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use App\Http\Resources\ClientResource;
+use App\Jobs\ProcessUserImportJob;
 use App\Models\Passport\Client;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -144,12 +145,12 @@ class DashboardController extends Controller implements HasMiddleware
         );*/
 
         $client = app(ClientRepository::class)->create(
-            userId:null,
-            name:$request->name,
-            redirect: implode(',',$request->redirect_uris),
+            userId: null,
+            name: $request->name,
+            redirect: implode(',', $request->redirect_uris),
             confidential: $request->boolean('confidential'),
-            personalAccess:true,
-            password:true,
+            personalAccess: true,
+            password: true,
         );
 
         $plainSecret = $client->plainSecret;
@@ -201,5 +202,18 @@ class DashboardController extends Controller implements HasMiddleware
     public function personal_access_tokens()
     {
         return Inertia::render('auth/oauth/PersonalAccessTokens');
+    }
+
+    public function import_users(Request $request)
+    {
+        $request->validate([
+            'file' => 'required','file','mimes:csv' ]);
+
+        $path = $request->file('file')->store('imports'); // Store file and get path
+        
+        // Dispatch job, only passing the path
+        dispatch(new ProcessUserImportJob($path));
+        
+        return to_route('users')->with('success', 'File submitted to import queue.');
     }
 }

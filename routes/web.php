@@ -21,6 +21,7 @@ Route::post('/user',[DashboardController::class,'store_user'])->name('user');
 Route::get('/user/{user}',[DashboardController::class,'show_user'])->name('show_user');
 Route::patch('/user/{user}',[DashboardController::class,'update_user'])->name('update_user');
 Route::delete('/user/{user}',[DashboardController::class,'delete_user'])->name('delete_user');
+Route::post('/user/import',[DashboardController::class,'import_users'])->name('user.import');
 Route::get('/clients',[DashboardController::class,'clients'])->name('clients');
 Route::post('/clients',[DashboardController::class,'create_client'])->name('clients');
 Route::get('/clients/{client}',[DashboardController::class,'show_client'])->name('show_client');
