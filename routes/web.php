@@ -22,6 +22,11 @@ Route::get('/user/{user}',[DashboardController::class,'show_user'])->name('show_
 Route::patch('/user/{user}',[DashboardController::class,'update_user'])->name('update_user');
 Route::delete('/user/{user}',[DashboardController::class,'delete_user'])->name('delete_user');
 Route::post('/user/import',[DashboardController::class,'import_users'])->name('user.import');
+Route::get('groups',[DashboardController::class,'groups'])->name('groups');
+Route::post('groups',[DashboardController::class,'store_group'])->name('groups');
+Route::get('groups/{group}',[DashboardController::class,'show_group'])->name('groups.show');    
+Route::put('groups/{group}',[DashboardController::class,'update_group'])->name('groups.update');
+Route::delete('groups/{group}',[DashboardController::class,'destroy_group'])->name('groups.destroy');
 Route::get('/clients',[DashboardController::class,'clients'])->name('clients');
 Route::post('/clients',[DashboardController::class,'create_client'])->name('clients');
 Route::get('/clients/{client}',[DashboardController::class,'show_client'])->name('show_client');

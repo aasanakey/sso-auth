@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
 use App\Http\Resources\ClientResource;
 use App\Jobs\ProcessUserImportJob;
+use App\Models\Group;
 use App\Models\Passport\Client;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -216,4 +217,49 @@ class DashboardController extends Controller implements HasMiddleware
         
         return to_route('users')->with('success', 'File submitted to import queue.');
     }
+
+    public function groups()
+    {
+        $groups = Group::get();
+        return Inertia::render('Groups',[
+            'groups' => $groups,
+        ]);
+    }
+
+    public function store_group(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+        Group::create([
+            'name' => $request->name,
+        ]);
+        return redirect()->back()->with('success', 'Group created successfully.');
+    }
+
+    public function show_group(Group $group)
+    {
+        $users = $group->users()->get();
+        return Inertia::render('Group',[
+            'group' => $group,
+            'users' => $users,
+        ]);
+    }
+
+    public function update_group(Request $request, Group $group)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+        $group->update([
+            'name' => $request->name,
+        ]);
+        return redirect()->back()->with('success', 'Group updated successfully.');
+    }
+
+    public function destroy_group(Group $group)
+    {
+        $group->delete();
+        return redirect()->back()->with('success', 'Group deleted successfully.');
+    }   
 }
