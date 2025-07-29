@@ -52,3 +52,10 @@ export interface SocialProvider {
     redirect_uri?: string
     created_at:string
 }
+
+export interface Group {
+    id: number;
+    name: string;
+    created_at?: string;
+    updated_at?: string;
+}

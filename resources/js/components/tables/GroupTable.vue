@@ -2,7 +2,7 @@
 import { computed, h } from 'vue'
 import type { ColumnDef } from '@tanstack/vue-table'
 import DataTable from './components/DataTable.vue'
-import { User } from '@/types';
+import { Group } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
 
 
@@ -13,7 +13,7 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const defaultColumns: ColumnDef<User>[] = [
+const defaultColumns: ColumnDef<Group>[] = [
     {
         header: 'ID',
         accessorKey: 'id',
@@ -21,10 +21,6 @@ const defaultColumns: ColumnDef<User>[] = [
     {
         header: 'Name',
         accessorKey: 'name',
-    },
-    {
-        header: 'Email',
-        accessorKey: 'email',
     },
     {
         header: 'Created_at',
@@ -36,21 +32,21 @@ const defaultColumns: ColumnDef<User>[] = [
         header: 'Actions',
         enableHiding: false,
         cell: ({ row }) => {
-            const user = row.original
+            const group = row.original
 
             return h('div',{cass:'flex items-center gap-2'},[
-                h(Link,{href:route('show_user',{user:user.id}), class:'text-blue-500'},() =>'view')
+                h(Link,{href:route('groups.show',{group:group.id}), class:'text-blue-500'},() =>'view')
             ])
         },
     }
 ];
 const columns = computed(() => props.columns ?? defaultColumns)
 const page = usePage();
-const users = computed<User[]>(() => page.props.users as User[])
+const groups = computed<Group[]>(() => page.props.groups as Group[])
 </script>
 
 <template>
     <div class="container py-10 mx-auto">
-        <DataTable :columns="columns" :data="users" />
+        <DataTable :columns="columns" :data="groups" />
     </div>
 </template>
