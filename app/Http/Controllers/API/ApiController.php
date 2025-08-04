@@ -7,12 +7,9 @@ use App\Models\User;
 use App\Http\Resources\UserResource;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Password;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\{Auth, Hash, Password};
+use Illuminate\Validation\{Rules, ValidationException};
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules;
 use Laravel\Passport\RefreshTokenRepository;
 
 class ApiController extends Controller
@@ -100,9 +97,6 @@ class ApiController extends Controller
         // Revoke associated refresh tokens
         //app(RefreshTokenRepository::class)->revokeRefreshTokensByAccessTokenId($accessToken->id);
 
-        return response()->json([
-            'message' => 'Successfully logged out'
-        ]);
         // Return a success response
         return response()->json([
             'message' => 'Logged out successfully',
@@ -140,6 +134,25 @@ class ApiController extends Controller
         return response()->json([
             "message" => "Profile updated successfully.",
             "data" => new UserResource($user)
+        ],200);
+    }
+
+    /**
+     * Update the user's password.
+     */
+    public function update_password(Request $request)
+    {
+        $validated = $request->validate([
+            'current_password' => ['required', 'current_password'],
+            'password' => ['required', Password::defaults(), 'confirmed'],
+        ]);
+
+        $request->user()->update([
+            'password' => Hash::make($validated['password']),
+        ]);
+
+        return response()->json([
+            'message' => 'Password updated successfully.'
         ],200);
     }
 
