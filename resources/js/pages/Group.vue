@@ -2,7 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { Group, User, type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-import UserTable from '@/components/tables/UserTable.vue';
+import { GroupUsersTable } from '@/components/tables';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -24,7 +24,7 @@ const { group } = defineProps<{
             <div class="flex gap-4">
                 <p class="text-2xl font-bold capitalize">Group:&nbsp;{{ group.name }}</p>
             </div>
-            <UserTable/>
+            <GroupUsersTable/>
         </div>
     </AppLayout>
 </template>
