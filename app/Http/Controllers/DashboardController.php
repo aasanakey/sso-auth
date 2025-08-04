@@ -239,7 +239,8 @@ class DashboardController extends Controller implements HasMiddleware
 
     public function show_group(Group $group)
     {
-        $users = $group->users()->get();
+        $group->load('users');
+        $users = User::all();
         return Inertia::render('Group',[
             'group' => $group,
             'users' => $users,
