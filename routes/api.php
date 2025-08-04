@@ -15,11 +15,30 @@ Route::middleware(['client'])->group(function () {
 });
 
 Route::middleware(['auth:api'])->group(function () {
-    //Route::post('/api/auth/login',[ApiController::class,'login']);
+    //Route::post('/auth/login',[ApiController::class,'login']);
 
     Route::post('/auth/logout', [ApiController::class, 'logout']);
 
     Route::get('/profile', [ApiController::class, 'profile']);
+    Route::put('/profile/{user}', [ApiController::class, 'update_profile']);
     Route::patch('/profile/{user}', [ApiController::class, 'update_profile']);
-    Route::patch('/profile/{user}', [ApiController::class, 'update_profile']);
+    Route::put('/profile/password-update', [ApiController::class, 'update_password']);
+    
+    Route::middleware('auth:api')->get('/oauth/userinfo', function(){
+        $user = auth()->user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        // Build claims manually or load from claim services if needed
+        return response()->json([
+            'sub'   => $user->getKey(),
+            'email' => $user->email,
+            'name'  => $user->name,
+            'preferred_username' => $user->email,
+            'groups' => $user->groups->pluck('name')->toArray(),
+            //'roles' => $user->roles->pluck('name')->toArray(), // adjust as needed
+        ]);
+    })->name('openid.userinfo');
 });
