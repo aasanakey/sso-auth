@@ -13,7 +13,8 @@ return new class extends Migration
     {
         Schema::create('social_accounts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users','id')->cascadeOnUpdate()->cascadeOnDelete();
+            $table->uuid('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('provider_id')->constrained('social_providers')->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('provider_user_id');
             $table->timestamps();
