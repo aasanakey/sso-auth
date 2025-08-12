@@ -37,7 +37,7 @@ class ApiController extends Controller
         ]);
 
         // Return the new user with a 201 Created status
-        return new UserResource($user)
+        return (new UserResource($user))
             ->response()
             ->setStatusCode(201);
     }
@@ -127,14 +127,14 @@ class ApiController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             //'password' => 'required|string|min:8|confirmed',
-        ]); 
+        ]);
 
         $user->update($request->all());
         UserResource::withoutWrapping();
         return response()->json([
             "message" => "Profile updated successfully.",
             "data" => new UserResource($user)
-        ],200);
+        ], 200);
     }
 
     /**
@@ -153,7 +153,7 @@ class ApiController extends Controller
 
         return response()->json([
             'message' => 'Password updated successfully.'
-        ],200);
+        ], 200);
     }
 
     public function forgot_password(Request $request)
@@ -162,14 +162,24 @@ class ApiController extends Controller
             'email' => 'required|email',
         ]);
 
-        Password::sendResetLink(
+        /*Password::sendResetLink(
             $request->only('email')
         );
+        */
+
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            $token = Password::broker()->createToken($user);
+        }
+
 
         //return back()->with('status', __('A reset link will be sent if the account exists.'));
         return response()->json([
+            'success' => $token ? true : false,
+            'token' => $token,
             'message' => 'A reset link will be sent if the account exists.'
-        ],200);
+        ], 200);
     }
 
     public function change_password(Request $request)
@@ -194,14 +204,15 @@ class ApiController extends Controller
                 event(new PasswordReset($user));
             }
         );
-
+        
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
         if ($status == Password::PasswordReset) {
+
             return response()->json([
-                'message' => $status,
-            ],200);
+                'message' => __('Your password has been reset successfully.'),
+            ], 200);
         }
 
         throw ValidationException::withMessages([
