@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignId('provider_id')->constrained('social_providers')->cascadeOnUpdate()->cascadeOnDelete();
             $table->string('provider_user_id');
             $table->timestamps();
-             $table->unique(['provider_user_id','provider' ]);
+             $table->unique(['provider_user_id','provider_id' ]);
         });
 
          Schema::table('users', function (Blueprint $table) {
