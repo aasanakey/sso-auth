@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Http\Resources\UserResource;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Auth\Events\Verified;
+use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, Hash, Password};
 use Illuminate\Validation\{Rules, ValidationException};
@@ -218,5 +220,34 @@ class ApiController extends Controller
         throw ValidationException::withMessages([
             'email' => [__($status)],
         ]);
+    }
+
+    /**
+     * Mark the authenticated user's email address as verified for API usage.
+     */
+    public function verify_email(Request $request)
+    {
+        // Check if the user's email is already verified
+        if ($request->user()->hasVerifiedEmail()) {
+            return response()->json([
+                'message' => 'Email already verified.',
+                'status' => 'success'
+            ], 200); // HTTP 200 OK
+        }
+
+        // Attempt to mark the email as verified
+        if ($request->user()->markEmailAsVerified()) {
+            /** @var \Illuminate\Contracts\Auth\MustVerifyEmail $user */
+            $user = $request->user();
+            event(new Verified($user)); // Fire the Verified event
+        }
+
+        // If verification was successful (or already verified), return success
+        // Note: The EmailVerificationRequest handles invalid signatures/users,
+        // throwing an exception before this point if the link is bad.
+        return response()->json([
+            'message' => 'Email verified successfully.',
+            'status' => 'success'
+        ], 200); // HTTP 200 OK
     }
 }
