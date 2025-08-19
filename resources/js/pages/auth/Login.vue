@@ -74,7 +74,7 @@ const submit = () => {
                 </Button>
             </div>
 
-            <div class="relative">
+            <div v-if="socialProviders.length > 0" class="relative">
                 <div class="absolute inset-0 flex items-center">
                     <span class="w-full border-t"></span>
                 </div>
